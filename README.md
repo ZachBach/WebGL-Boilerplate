@@ -1,3 +1,3 @@
 # THREE.js
 
-#boilerplate for three.js.
+boilerplate for three.js.
