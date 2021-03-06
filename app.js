@@ -22,8 +22,8 @@ export default class Sketch {
         this.controls = new OrbitControls( this.camera, this.renderer.domElement)
 
 
-        this.setupResize();
         this.resize();
+        this.setupResize();
         this.addObjects();
         this.render();
     }
@@ -35,18 +35,28 @@ export default class Sketch {
     resize() {
         this.width = this.container.offsetWidth;
         this.height = this.container.offsetHeight;
-
-        this.renderer.setSize( this.width, this.height );
-
+        this.renderer.setSize( this.width, this.height)
         this.camera.aspect = this.width / this.height;
-
+        this.camera.updateProjectionMatrix()
     }
 
 
     addObjects() {
         
-    this.geometry = new THREE.BoxGeometry( 0.6, 0.6, 0.6 );
+    this.geometry = new THREE.BoxGeometry( 0.4, 0.4, 0.4 );
 	this.material = new THREE.MeshNormalMaterial();
+
+    this.material = new THREE.ShaderMaterial({
+        fragmentShader: `
+        void main() {
+            gl_FragColor = vec4(1.,0.,1.0,1.0);
+        }
+        `,
+        vertexShader: `
+        void main(){
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }`
+    })
 
 	this.mesh = new THREE.Mesh( this.geometry, this.material );
 	this.scene.add( this.mesh );
@@ -78,3 +88,6 @@ new Sketch({
 
 // Next we need to populate our animation loop we can take the code from three.js and
 // add it to our render function.
+
+// When you change something in three.js you have to deliberatly say you changed it!
+// In this instance for resizing we need to update our camera metrics or matrix metrics.

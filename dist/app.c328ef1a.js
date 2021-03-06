@@ -36605,8 +36605,8 @@ function () {
 
     this.container.appendChild(this.renderer.domElement);
     this.controls = new _OrbitControls.OrbitControls(this.camera, this.renderer.domElement);
-    this.setupResize();
     this.resize();
+    this.setupResize();
     this.addObjects();
     this.render();
   }
@@ -36623,12 +36623,17 @@ function () {
       this.height = this.container.offsetHeight;
       this.renderer.setSize(this.width, this.height);
       this.camera.aspect = this.width / this.height;
+      this.camera.updateProjectionMatrix();
     }
   }, {
     key: "addObjects",
     value: function addObjects() {
-      this.geometry = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+      this.geometry = new THREE.BoxGeometry(0.4, 0.4, 0.4);
       this.material = new THREE.MeshNormalMaterial();
+      this.material = new THREE.ShaderMaterial({
+        fragmentShader: "\n        void main() {\n            gl_FragColor = vec4(1.,0.,1.0,1.0);\n        }\n        ",
+        vertexShader: "\n        void main(){\n            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n        }"
+      });
       this.mesh = new THREE.Mesh(this.geometry, this.material);
       this.scene.add(this.mesh);
     } // Create render loop
@@ -36655,6 +36660,8 @@ new Sketch({
 // Line 49-53 is our first object we are going to add.
 // Next we need to populate our animation loop we can take the code from three.js and
 // add it to our render function.
+// When you change something in three.js you have to deliberatly say you changed it!
+// In this instance for resizing we need to update our camera metrics or matrix metrics.
 },{"three":"node_modules/three/build/three.module.js","three/examples/jsm/controls/OrbitControls.js":"node_modules/three/examples/jsm/controls/OrbitControls.js"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -36683,7 +36690,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54308" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59159" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
